@@ -8,6 +8,8 @@ def update_dataframe(df, PSUV, MUD):
     df['MUD_%'] = df[MUD] / df['VOTOS ESCRUTADOS']
     df['MUD_N'] = df[MUD]
 
+    df['centro'] = df['parroquia']+df['centro']
+
     unique_estados = np.unique(df['estado'])
     unique_parroquias = np.unique(df['parroquia'])
     unique_centros = np.unique(df['centro'])
@@ -76,10 +78,10 @@ def update_dataframe(df, PSUV, MUD):
     df['centro_residual']=pd.Series(centro_residual)
     df['estado_residual']=pd.Series(estado_residual)
 
-    df['parroquia_standarised_residual'] = df['parroquia_residual']/df['parroquia_residual'].var()
-    df['municipio_standarised_residual'] =  df['municipio_residual']/df['municipio_residual'].var()
-    df['centro_standarised_residual'] = df['centro_residual']/df['centro_residual'].var()
-    df['estado_standarised_residual'] = df['estado_residual']/df['estado_residual'].var()
+    df['parroquia_standarised_residual'] = df['parroquia_residual']/df['parroquia_residual'].std()
+    df['municipio_standarised_residual'] =  df['municipio_residual']/df['municipio_residual'].std()
+    df['centro_standarised_residual'] = df['centro_residual']/df[df['centro_residual']!=0]['centro_residual'].std()
+    df['estado_standarised_residual'] = df['estado_residual']/df['estado_residual'].std()
 
 
     return df
