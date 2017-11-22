@@ -35,18 +35,19 @@ def name_fixed(s_object):
     return s_object
 
 
-def process_accordion(accordion, dict_mun):
-    
-    for i in xrange(0, len(accordion), 3):
-        l_row = accordion[i:i + 3]
+def process_accordion(accordion, dict_mun, tries):
+    if tries < 5:
+        for i in xrange(0, len(accordion), 3):
+            l_row = accordion[i:i + 3]
 
-        try: 
-            temp = float(l_row[1])
-        except:
-            time.sleep(3)
-            process_accordion(accordion, dict_mun)
-            
-        dict_mun[string_fixer(l_row[0])] = float(l_row[1])
+            try:
+                n_votos = float(l_row[1])
+            except:
+                time.sleep(3)
+                process_accordion(accordion, dict_mun, tries)
+                tries += 1
+
+            dict_mun[string_fixer(l_row[0])] = n_votos
 
     return dict_mun
 
@@ -79,7 +80,7 @@ def get_mesa_info(driver, estado, mun, par, centro, mesa):
         l_row = row.text.rsplit(' ', 2)
         dict_mun[string_fixer(l_row[0])] = float(l_row[1])
 
-    dict_mun = process_accordion(accordion, dict_mun)
+    dict_mun = process_accordion(accordion, dict_mun,0)
 
     return dict_mun
 
@@ -108,7 +109,7 @@ def main():
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        # options_mun = options_mun[6:] ## Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
+        options_mun = options_mun[9:] ## Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
         for mun in options_mun:
             l_dicts = []
             options_par = process_level(driver, 'cod_par', mun)
