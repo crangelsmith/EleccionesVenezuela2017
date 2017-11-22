@@ -12,7 +12,7 @@ def setup_selenium(url):
 
 
 def get_options(driver, level, tries):
-    time.sleep(2)
+    time.sleep(4)
     if tries > 3:
         sys.exit("too many retries")
     select_box = driver.find_element_by_name(level)
@@ -35,6 +35,22 @@ def name_fixed(s_object):
     return s_object
 
 
+def process_accordion(accordion, dict_mun):
+    
+    for i in xrange(0, len(accordion), 3):
+        l_row = accordion[i:i + 3]
+
+        try: 
+            temp = float(l_row[1])
+        except:
+            time.sleep(3)
+            process_accordion(accordion, dict_mun)
+            
+        dict_mun[string_fixer(l_row[0])] = float(l_row[1])
+
+    return dict_mun
+
+
 def get_mesa_info(driver, estado, mun, par, centro, mesa):
     try:
         mesa.click()
@@ -44,12 +60,12 @@ def get_mesa_info(driver, estado, mun, par, centro, mesa):
 
     time.sleep(1)
 
-    dict_estado = {}
-    dict_estado['estado'] = string_fixer(estado.text)
-    dict_estado['municipio'] = string_fixer(mun.text)
-    dict_estado['parroquia'] = string_fixer(par.text)
-    dict_estado['centro'] = string_fixer(centro.text)
-    dict_estado['mesa'] = mesa.text
+    dict_mun = {}
+    dict_mun['estado'] = string_fixer(estado.text)
+    dict_mun['municipio'] = string_fixer(mun.text)
+    dict_mun['parroquia'] = string_fixer(par.text)
+    dict_mun['centro'] = string_fixer(centro.text)
+    dict_mun['mesa'] = mesa.text
 
     print("mesa: " + str(mesa.text))
     accordion = [i.text for i in driver.find_elements_by_tag_name('b')]
@@ -61,13 +77,11 @@ def get_mesa_info(driver, estado, mun, par, centro, mesa):
     info = [x for x in driver.find_elements_by_tag_name('tr')]
     for row in info:
         l_row = row.text.rsplit(' ', 2)
-        dict_estado[string_fixer(l_row[0])] = float(l_row[1])
+        dict_mun[string_fixer(l_row[0])] = float(l_row[1])
 
-    for i in xrange(0, len(accordion), 3):
-        l_row = accordion[i:i + 3]
-        dict_estado[string_fixer(l_row[0])] = float(l_row[1])
+    dict_mun = process_accordion(accordion, dict_mun)
 
-    return dict_estado
+    return dict_mun
 
 
 def process_level(driver, level, element):
@@ -90,11 +104,11 @@ def main():
     options_estado = get_options(driver, 'cod_edo', 0)
     options_estado.pop(0)
 
-    options_estado = [options_estado[20]]
+    options_estado = [options_estado[11]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-
+        # options_mun = options_mun[6:] ## Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
         for mun in options_mun:
             l_dicts = []
             options_par = process_level(driver, 'cod_par', mun)
@@ -106,13 +120,13 @@ def main():
                     options_mesa = process_level(driver, 'cod_mesa', centro)
 
                     for mesa in options_mesa:
-                        dict_estado = get_mesa_info(driver, estado, mun, par, centro, mesa)
+                        dict_mun = get_mesa_info(driver, estado, mun, par, centro, mesa)
 
-                        l_dicts.append(dict_estado)
+                        l_dicts.append(dict_mun)
 
             df = pd.DataFrame(l_dicts)
 
-            out_name = name_fixed(estado.text) + '-' + name_fixed(mun.text) + '.json'
+            out_name = '../data/'+name_fixed(estado.text) + '-' + name_fixed(mun.text) + '.json'
             df.to_json(out_name, orient='records', lines=True)
 
     driver.close()
