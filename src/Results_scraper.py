@@ -9,8 +9,11 @@ from selenium.webdriver.common.by import By
 
 
 def setup_selenium():
-    driver = webdriver.Firefox(executable_path='/Users/harvey/Downloads/geckodriver')
+    #driver = webdriver.Firefox(executable_path='/Users/harvey/Downloads/geckodriver')
     # driver = webdriver.Chrome(executable_path='/Users/harvey/Downloads/chromedriver')
+    #driver = webdriver.Chrome(executable_path='/home/camila/Downloads/geckodriver')
+    driver = webdriver.Firefox(executable_path='/home/camila/Downloads/geckodriver')
+
     driver.implicitly_wait(5)
 
     return driver
@@ -97,7 +100,7 @@ def main():
 
     options_estado = get_options(driver, 'cod_edo')
     options_estado.pop(0)
-    
+
     # ('EDO. ANZOATEGUI',     0)
     # ('EDO. APURE',          1)
     # ('EDO. ARAGUA',         2)
@@ -121,12 +124,12 @@ def main():
     # ('EDO. AMAZONAS',      20)
     # ('EDO. DELTA AMACURO', 21)
     # ('EDO. VARGAS',        22)
-    
-    options_estado = [options_estado[11]]
+
+    options_estado = [options_estado[6]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        options_mun = options_mun[9:]
+        #options_mun = options_mun[9:]
         # Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
         for mun in options_mun:
             l_dicts = []

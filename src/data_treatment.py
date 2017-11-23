@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import math
 def update_dataframe(df, PSUV, MUD):
     df['Abstencion_%'] = df['ABSTENCION'] / df['ELECTORES INSCRITOS']
     df['PSUV_%'] = df[PSUV] / df['VOTOS ESCRUTADOS']
@@ -9,6 +9,8 @@ def update_dataframe(df, PSUV, MUD):
     df['MUD_N'] = df[MUD]
 
     df['centro'] = df['parroquia']+df['centro']
+
+    df['rescaled_N'] =  math.log((df['VOTOS VALIDOS'].sum()-df[PSUV].sum())/df[PSUV].sum())
 
     unique_estados = np.unique(df['estado'])
     unique_parroquias = np.unique(df['parroquia'])
