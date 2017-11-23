@@ -38,7 +38,7 @@ def name_fixer(s_object):
 
 
 def process_accordion(accordion, dict_mun):
-    time.sleep(1)
+    # time.sleep(1)
     for i in xrange(0, len(accordion), 3):
         l_row = accordion[i:i + 3]
 
@@ -50,7 +50,7 @@ def process_accordion(accordion, dict_mun):
 
 
 def get_mesa_info(driver, estado, mun, par, centro, mesa):
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 30)
     time.sleep(1)
     try:
         mesa.click()
@@ -62,7 +62,7 @@ def get_mesa_info(driver, estado, mun, par, centro, mesa):
                 'mesa': mesa.text}
 
     print("mesa: " + str(mesa.text))
-
+    time.sleep(1)
     wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'b')))
     wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'tr')))
 
@@ -97,12 +97,36 @@ def main():
 
     options_estado = get_options(driver, 'cod_edo')
     options_estado.pop(0)
-
-    options_estado = [options_estado[10]]
+    
+    # ('EDO. ANZOATEGUI',     0)
+    # ('EDO. APURE',          1)
+    # ('EDO. ARAGUA',         2)
+    # ('EDO. BARINAS',        3)
+    # ('EDO. BOLIVAR',        4)
+    # ('EDO. CARABOBO',       5)
+    # ('EDO. COJEDES',        6)
+    # ('EDO. FALCON',         7)
+    # ('EDO. GUARICO',        8)
+    # ('EDO. LARA',           9)
+    # ('EDO. MERIDA',        10)
+    # ('EDO. MIRANDA',       11)
+    # ('EDO. MONAGAS',       12)
+    # ('EDO. NVA.ESPARTA',   13)
+    # ('EDO. PORTUGUESA',    14)
+    # ('EDO. SUCRE',         15)
+    # ('EDO. TACHIRA',       16)
+    # ('EDO. TRUJILLO',      17)
+    # ('EDO. YARACUY',       18)
+    # ('EDO. ZULIA',         19)
+    # ('EDO. AMAZONAS',      20)
+    # ('EDO. DELTA AMACURO', 21)
+    # ('EDO. VARGAS',        22)
+    
+    options_estado = [options_estado[11]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        # options_mun = options_mun[9:]
+        options_mun = options_mun[9:]
         # Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
         for mun in options_mun:
             l_dicts = []
