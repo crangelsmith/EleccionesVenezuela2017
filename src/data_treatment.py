@@ -10,7 +10,7 @@ def update_dataframe(df, PSUV, MUD):
 
     df['centro'] = df['parroquia']+df['centro']
 
-    df['rescaled_N'] =  math.log((df['VOTOS VALIDOS'].sum()-df[PSUV].sum())/df[PSUV].sum())
+    df['rescaled_N'] =  math.log((df['VOTOS VALIDOS'].sum()-df[PSUV].sum())/float(df[PSUV].sum()))
 
     unique_estados = np.unique(df['estado'])
     unique_parroquias = np.unique(df['parroquia'])
