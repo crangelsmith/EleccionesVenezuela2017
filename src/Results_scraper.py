@@ -106,7 +106,7 @@ def process_level(driver, level, element):
         null_mesa = options.pop(0)
         return options, null_mesa
     else:
-        options.pop(0)
+        print(options.pop(0))
 
     return options
 
@@ -127,8 +127,8 @@ def main():
     options_estado = get_options(driver, 'cod_edo')
     options_estado.pop(0)
     
-    # ('EDO. ANZOATEGUI',     0)
-    # ('EDO. APURE',          1)
+    # ('EDO. ANZOATEGUI',     0) DONE.
+    # ('EDO. APURE',          1) DONE.
     # ('EDO. ARAGUA',         2)
     # ('EDO. BARINAS',        3)
     # ('EDO. BOLIVAR',        4)
@@ -151,11 +151,11 @@ def main():
     # ('EDO. DELTA AMACURO', 21) Done.
     # ('EDO. VARGAS',        22) Done.
     
-    options_estado = [options_estado[11]]
+    options_estado = [options_estado[1]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        options_mun = options_mun[20:]
+        # options_mun = options_mun[20:]
         # Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
 
         for mun in options_mun:
