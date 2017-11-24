@@ -79,11 +79,12 @@ def get_mesa_info(driver, estado, mun, par, centro, mesa, null_mesa):
         info = [x for x in driver.find_elements_by_tag_name('tr')]
 
     for row in info:
-        l_row = row.text.rsplit(' ', 2)
         try:
+            l_row = row.text.rsplit(' ', 2)
             dict_mun[string_fixer(l_row[0])] = float(l_row[1])
         except:
             re_click(mesa, null_mesa)
+            l_row = row.text.rsplit(' ', 2)
             dict_mun[string_fixer(l_row[0])] = float(l_row[1])
     try:
         dict_mun = process_accordion(accordion, dict_mun)
@@ -136,9 +137,9 @@ def main():
     # ('EDO. FALCON',         7)
     # ('EDO. GUARICO',        8)
     # ('EDO. LARA',           9)
-    # ('EDO. MERIDA',        10)
-    # ('EDO. MIRANDA',       11)
-    # ('EDO. MONAGAS',       12)
+    # ('EDO. MERIDA',        10) Done.
+    # ('EDO. MIRANDA',       11) Done.
+    # ('EDO. MONAGAS',       12) Done.
     # ('EDO. NVA.ESPARTA',   13)
     # ('EDO. PORTUGUESA',    14)
     # ('EDO. SUCRE',         15)
@@ -146,34 +147,32 @@ def main():
     # ('EDO. TRUJILLO',      17)
     # ('EDO. YARACUY',       18)
     # ('EDO. ZULIA',         19)
-    # ('EDO. AMAZONAS',      20)
-    # ('EDO. DELTA AMACURO', 21)
-    # ('EDO. VARGAS',        22)
+    # ('EDO. AMAZONAS',      20) Done.
+    # ('EDO. DELTA AMACURO', 21) Done.
+    # ('EDO. VARGAS',        22) Done.
     
     options_estado = [options_estado[11]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        options_mun = options_mun[13:]
+        options_mun = options_mun[20:]
         # Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
-        for mun in options_mun:
 
+        for mun in options_mun:
             options_par = process_level(driver, 'cod_par', mun)
 
             for par in options_par:
-                l_dicts = []
                 options_centro = process_level(driver, 'cod_centro', par)
+                l_dicts = []
 
                 for centro in options_centro:
                     options_mesa, null_mesa = process_level(driver, 'cod_mesa', centro)
 
                     for mesa in options_mesa:
                         dict_mun = get_mesa_info(driver, estado, mun, par, centro, mesa, null_mesa)
-
                         l_dicts.append(dict_mun)
 
                 df = pd.DataFrame(l_dicts)
-
                 out_name = '../data/' + name_fixer(estado.text) + '-' + name_fixer(mun.text) + '-' + name_fixer(par.text) + '.json'
                 df.to_json(out_name, orient='records', lines=True)
 
