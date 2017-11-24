@@ -17,6 +17,7 @@ def do_SR_mesa(df_out_MONAGAS):
         'parroquia_standarised_residual'].mean()
     print 'std ', df_out_MONAGAS[df_out_MONAGAS['centro_standarised_residual'] == 0][
         'parroquia_standarised_residual'].std()
+    print
 
     print 'centros with more than 1 mesa:'
     print 'mean', df_out_MONAGAS[df_out_MONAGAS['centro_standarised_residual'] != 0][
