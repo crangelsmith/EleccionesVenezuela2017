@@ -9,10 +9,10 @@ from selenium.webdriver.common.by import By
 
 
 def setup_selenium():
-    #driver = webdriver.Firefox(executable_path='/Users/harvey/Downloads/geckodriver')
-    # driver = webdriver.Chrome(executable_path='/Users/harvey/Downloads/chromedriver')
+    driver = webdriver.Firefox(executable_path='/Users/harvey/Downloads/geckodriver')
+    #driver = webdriver.Chrome(executable_path='/Users/harvey/Downloads/chromedriver')
     #driver = webdriver.Chrome(executable_path='/home/camila/Downloads/geckodriver')
-    driver = webdriver.Firefox(executable_path='/home/camila/Downloads/geckodriver')
+    #driver = webdriver.Firefox(executable_path='/home/camila/Downloads/geckodriver')
 
     driver.implicitly_wait(5)
 
@@ -20,7 +20,7 @@ def setup_selenium():
 
 
 def get_options(driver, level):
-    time.sleep(1)
+    time.sleep(0.5)
 
     wait = WebDriverWait(driver, 10)
     select_box = wait.until(ec.element_to_be_clickable((By.NAME, level)))
@@ -54,20 +54,18 @@ def process_accordion(accordion, dict_mun):
 
 def get_mesa_info(driver, estado, mun, par, centro, mesa):
     wait = WebDriverWait(driver, 30)
-    time.sleep(1)
-    try:
-        mesa.click()
-    except WebDriverException:
-        print("mesa not ready")
+    # time.sleep(1)
+    mesa.click()
 
     dict_mun = {'estado': string_fixer(estado.text), 'municipio': string_fixer(mun.text),
                 'parroquia': string_fixer(par.text), 'centro': string_fixer(centro.text),
                 'mesa': mesa.text}
 
     print("mesa: " + str(mesa.text))
+    # wait.until(ec.invisibility_of_element_located((By.CSS_SELECTOR, '#accordion > div:nth-child(2) > div.panel-heading.hoverDiv > h4 > a > div > div.col-sm-8.text-left > b > strong')))
+    wait.until(ec.visibility_of_element_located((By.ID, 'accordion')))
     time.sleep(1)
-    wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'b')))
-    wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'tr')))
+    # wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'tr')))
 
     accordion = [i.text for i in driver.find_elements_by_tag_name('b')]
     info = [x for x in driver.find_elements_by_tag_name('tr')]
@@ -124,12 +122,12 @@ def main():
     # ('EDO. AMAZONAS',      20)
     # ('EDO. DELTA AMACURO', 21)
     # ('EDO. VARGAS',        22)
-
-    options_estado = [options_estado[6]]
+    
+    options_estado = [options_estado[11]]
 
     for estado in options_estado:
         options_mun = process_level(driver, 'cod_mun', estado)
-        #options_mun = options_mun[9:]
+        # options_mun = options_mun[9:]
         # Change this line if the code crashes or gets booted and only a subset of the munic. have been done.
         for mun in options_mun:
             l_dicts = []
