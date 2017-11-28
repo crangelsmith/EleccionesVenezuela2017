@@ -1,6 +1,19 @@
 import numpy as np
 import pandas as pd
 import math
+
+
+def add_residual_to_df(df, level, residual, abstention_residual):
+    resid_name = level+'_residual'
+    abstention_resid = 'abstention_'+level+'_residual'
+    df[resid_name]=pd.Series(residual)
+    df[abstention_resid] = pd.Series(abstention_residual)
+    df[level+'_standardised_residual'] = df[resid_name] / df[resid_name].std()
+    df[level+'_standardised_residual_abstention'] = df[abstention_resid] / df[abstention_resid].std()
+
+    return df
+
+
 def update_dataframe(df, PSUV, MUD):
     df['Abstencion_%'] = df['ABSTENCION'] / df['ELECTORES INSCRITOS']
 
@@ -89,8 +102,7 @@ def update_dataframe(df, PSUV, MUD):
     abstention_centro_residual = []
     abstention_estado_residual = []
 
-
-    for i in range(0,df.shape[0]):
+    for i in range(len(df)):
         psuv_val = df['PSUV_%'].iloc[i]
         centro = df['centro'].iloc[i]
         municipio = df['municipio'].iloc[i]
@@ -114,27 +126,10 @@ def update_dataframe(df, PSUV, MUD):
 
         abstention_estado_residual.append(1 - (abstention_val / float(estado_average_abstention[estado])))
 
-    df['parroquia_residual']=pd.Series(parroquia_residual)
-    df['municipio_residual']=pd.Series(municipio_residual)
-    df['centro_residual']=pd.Series(centro_residual)
-    df['estado_residual']=pd.Series(estado_residual)
-
-    df['abstention_parroquia_residual'] = pd.Series(abstention_parroquia_residual)
-    df['abstention_municipio_residual'] = pd.Series(abstention_municipio_residual)
-    df['abstention_centro_residual'] = pd.Series(abstention_centro_residual)
-    df['abstention_estado_residual'] = pd.Series(abstention_estado_residual)
-
-
-    df['parroquia_standarised_residual'] = df['parroquia_residual']/df['parroquia_residual'].std()
-    df['municipio_standarised_residual'] =  df['municipio_residual']/df['municipio_residual'].std()
-    df['centro_standarised_residual'] = df['centro_residual']/df[df['centro_residual']!=0]['centro_residual'].std()
-    df['estado_standarised_residual'] = df['estado_residual']/df['estado_residual'].std()
-
-    df['parroquia_standarised_residual_abstention'] = df['abstention_parroquia_residual']/df['abstention_parroquia_residual'].std()
-    df['municipio_standarised_residual_abstention'] =  df['abstention_municipio_residual']/df['abstention_municipio_residual'].std()
-    df['centro_standarised_residual_abstention'] = df['abstention_centro_residual']/df[df['abstention_centro_residual']!=0]['abstention_centro_residual'].std()
-    df['estado_standarised_residual_abstention'] = df['abstention_estado_residual']/df['abstention_estado_residual'].std()
-
+    add_residual_to_df(df, 'centro', centro_residual, abstention_centro_residual)
+    add_residual_to_df(df, 'parroquia', parroquia_residual, abstention_parroquia_residual)
+    add_residual_to_df(df, 'municipio', municipio_residual, abstention_municipio_residual)
+    add_residual_to_df(df, 'estado', estado_residual, abstention_estado_residual)
 
     return df
 
