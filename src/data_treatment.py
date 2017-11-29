@@ -16,7 +16,7 @@ def add_residual_to_df(df, level, residual, abstention_residual):
 
 def update_dataframe(df, PSUV, MUD):
     df['Abstencion_%'] = df['ABSTENCION'] / df['ELECTORES INSCRITOS']
-
+    df['turnout'] = 1 - df['Abstencion_%']
     try:
         df['PSUV_%'] = df[PSUV] / df['VOTOS ESCRUTADOS']
     except ZeroDivisionError:

@@ -58,5 +58,48 @@ def do_cumulative(df):
     psuv_cumsum = list(sorted_df['PSUV_cumsum'])
 
     plt.plot(turnout, psuv_cumsum)
-    plt.axvline(x=turnout_50)
-    plt.axvline(x=turnout_95)
+    plt.axvline(x=turnout_50,color='red')
+    plt.axvline(x=turnout_95,linestyle='dashed')
+
+
+def do_2dplot(df_out, varX,varY):
+
+    i = round(df_out.shape[0]/20.0)
+    print i
+
+    plt.hist2d(df_out[varX], df_out[varY], weights=df_out['VOTOS VALIDOS'], bins=i, cmap=plt.cm.jet)
+    plt.xlabel(varX)
+    plt.ylabel(varY)
+    plt.colorbar()
+
+
+def do_all(df_out):
+    from matplotlib.ticker import NullFormatter  # useful for `logit` scale
+
+    plt.figure(1)
+    plt.subplot(221)
+    do_SR(df_out)
+    plt.subplot(223)
+    do_SR_mesa(df_out)
+    plt.subplot(222)
+    do_cumulative(df_out)
+    print 'Inclusive'
+    plt.subplot(224)
+    do_2dplot(df_out, 'turnout', "PSUV_%")
+
+    df_1 = df_out[df_out['centro_standardised_residual'] == 0]
+    df_1plus = df_out[df_out['centro_standardised_residual'] != 0]
+    print 'Only 1 table'
+    plt.figure(2)
+    plt.subplot(2, 1, 1)
+    do_2dplot(df_1, 'turnout', "PSUV_%")
+    print 'More than 1 table'
+    plt.subplot(2, 1, 2)
+    do_2dplot(df_1plus, 'turnout', "PSUV_%")
+    plt.gca().yaxis.set_minor_formatter(NullFormatter())
+    plt.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95, hspace=0.25,
+                        wspace=0.35)
+
+
+
+
