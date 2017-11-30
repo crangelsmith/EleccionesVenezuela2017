@@ -62,18 +62,18 @@ def do_cumulative(df):
     plt.axvline(x=turnout_95,linestyle='dashed')
 
 
-def do_2dplot(df_out, varX,varY):
+def do_2dplot(df_out, varX,varY,bin=50):
 
     i = round(df_out.shape[0]/20.0)
     print i
 
-    plt.hist2d(df_out[varX], df_out[varY], weights=df_out['VOTOS VALIDOS'], bins=i, cmap=plt.cm.jet)
+    plt.hist2d(df_out[varX], df_out[varY], weights=df_out['VOTOS VALIDOS'], bins=bin, cmap=plt.cm.jet)
     plt.xlabel(varX)
     plt.ylabel(varY)
     plt.colorbar()
 
 
-def do_all(df_out):
+def do_all(df_out,bins=50):
     from matplotlib.ticker import NullFormatter  # useful for `logit` scale
 
     plt.figure(1)
@@ -85,7 +85,7 @@ def do_all(df_out):
     do_cumulative(df_out)
     print 'Inclusive'
     plt.subplot(224)
-    do_2dplot(df_out, 'turnout', "PSUV_%")
+    do_2dplot(df_out, 'turnout', "PSUV_%",bins)
 
     df_1 = df_out[df_out['centro_standardised_residual'] == 0]
     df_1plus = df_out[df_out['centro_standardised_residual'] != 0]

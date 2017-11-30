@@ -41,12 +41,14 @@ def update_dataframe(df,PSUV,MUD):
 
     centro_average = {}
     centro_average_abstention = {}
+
     for i in unique_centros:
+
         centro = df[df['centro'] == i]
-        try:
+        if centro['VOTOS ESCRUTADOS'].sum()!=0:
             average = centro[PSUV].sum() / float(centro['VOTOS ESCRUTADOS'].sum())
 
-        except ZeroDivisionError:
+        else:
             average = 0
 
 
@@ -113,19 +115,21 @@ def update_dataframe(df,PSUV,MUD):
 
         parroquia_residual.append((1-(psuv_val/float(parroquia_average[parroquia]))))
         municipio_residual.append(1-(psuv_val/float(municipio_average[municipio])))
+
         if float(centro_average[centro])!=0:
             centro_residual.append(1-(psuv_val/float(centro_average[centro])))
         else:
             centro_residual.append(1)
+
         estado_residual.append(1-(psuv_val/float(estado_average[estado])))
 
         abstention_parroquia_residual.append((1 - (abstention_val / float(parroquia_average_abstention[parroquia]))))
         abstention_municipio_residual.append(1 - (abstention_val / float(municipio_average_abstention[municipio])))
 
-        try:
+        if centro_average_abstention[centro]!=0:
             abstention_centro_residual.append(1 - (abstention_val / float(centro_average_abstention[centro])))
-        except ZeroDivisionError:
-            abstention_centro_residual.append(0)
+        else:
+            abstention_centro_residual.append(1)
 
         abstention_estado_residual.append(1 - (abstention_val / float(estado_average_abstention[estado])))
 
