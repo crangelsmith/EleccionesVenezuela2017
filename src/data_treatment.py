@@ -14,7 +14,7 @@ def add_residual_to_df(df, level, residual, abstention_residual):
     return df
 
 
-def update_dataframe(df, PSUV, MUD):
+def update_dataframe(df,PSUV,MUD):
     df['Abstencion_%'] = df['ABSTENCION'] / df['ELECTORES INSCRITOS']
     df['turnout'] = 1 - df['Abstencion_%']
     try:
@@ -113,7 +113,10 @@ def update_dataframe(df, PSUV, MUD):
 
         parroquia_residual.append((1-(psuv_val/float(parroquia_average[parroquia]))))
         municipio_residual.append(1-(psuv_val/float(municipio_average[municipio])))
-        centro_residual.append(1-(psuv_val/float(centro_average[centro])))
+        if float(centro_average[centro])!=0:
+            centro_residual.append(1-(psuv_val/float(centro_average[centro])))
+        else:
+            centro_residual.append(1)
         estado_residual.append(1-(psuv_val/float(estado_average[estado])))
 
         abstention_parroquia_residual.append((1 - (abstention_val / float(parroquia_average_abstention[parroquia]))))
@@ -134,5 +137,117 @@ def update_dataframe(df, PSUV, MUD):
     return df
 
 
+def update_all(df):
+
+    unique_estados = np.unique(df['estado'])
+
+    df_estados = []
+    for i in unique_estados:
+        print i
+        estado = df[df['estado'] == i]
+        PSUV = PSUV_MUD_dic[i][0]
+        MUD = PSUV_MUD_dic[i][1]
+        df_out = update_dataframe(estado,PSUV,MUD)
+        df_estados.append(df_out)
 
 
+    df_final = pd.concat(df_estados)
+
+    return df_final
+
+
+
+PSUV_MUD_dic={
+   "EDO. ANZOATEGUI":[
+      "ARISTOBULO IZTURIZ",
+      "ANTONIO BARRETO SIRA"
+   ],
+   "EDO. APURE":[
+      "RAMON CARRIZALEZ",
+      "JOSE MONTILLA"
+   ],
+   "EDO. ARAGUA":[
+      "RODOLFO MARCO TORRES",
+      "ISMAEL GARCIA"
+   ],
+   "EDO. BARINAS":[
+      "ARGENIS CHAVEZ",
+      "FREDDY SUPERLANO"
+   ],
+   "EDO. BOLIVAR":[
+      "JUSTO NOGUERA PIETRI",
+      "ANDRES VELASQUEZ"
+   ],
+   "EDO. CARABOBO":[
+      "RAFAEL LACAVA",
+      "ALEJANDRO FEO LA CRUZ"
+   ],
+   "EDO. COJEDES":[
+      "MARGAUD GODOY",
+      "ALBERTO GALINDEZ"
+   ],
+   "EDO. FALCON":[
+      "VICTOR CLARK",
+      "ELIEZER SIRIT"
+   ],
+   "EDO. GUARICO":[
+      "JOSE VASQUEZ",
+      "PEDRO LORETO"
+   ],
+   "EDO. LARA":[
+      "CARMEN MELENDEZ",
+      "HENRI FALCON"
+   ],
+   "EDO. MERIDA":[
+      "JEHYSON GUZMAN",
+      "RAMON GUEVARA"
+   ],
+   "EDO. MIRANDA":[
+      "HECTOR RODRIGUEZ",
+      "CARLOS OCARIZ"
+   ],
+   "EDO. MONAGAS":[
+      "YELITZE SANTAELLA",
+      "GUILLERMO CALL"
+   ],
+   "EDO. NVA.ESPARTA":[
+      "CARLOS MATA FIGUEROA",
+      "ALFREDO DIAZ"
+   ],
+   "EDO. PORTUGUESA":[
+      "MARIA BEATRIZ MARTINEZ",
+      "RAFAEL CALLES"
+   ],
+   "EDO. SUCRE":[
+      "EDWIN ROJAS",
+      "ROBERT ALCALA"
+   ],
+   "EDO. TACHIRA":[
+      "JOSE VIELMA MORA",
+      "LAIDY GOMEZ"
+   ],
+   "EDO. TRUJILLO":[
+      "HENRY RANGEL SILVA",
+      "CARLOS GONZALEZ"
+   ],
+   "EDO. YARACUY":[
+      "JULIO LEON HEREDIA",
+      "LUIS PARRA"
+   ],
+   "EDO. ZULIA":[
+      "ARIAS CARDENAS",
+      "JUAN PABLO GUANIPA"
+   ],
+   "EDO. AMAZONAS":[
+      "MIGUEL RODRIGUEZ",
+      "BERNABE GUTIERREZ"
+   ],
+   "EDO. DELTA AMACURO":[
+      "LIZETA HERNANDEZ",
+      "LARISSA GONZALEZ"
+   ],
+   "EDO. VARGAS":[
+      "JORGE GARCIA CARNEIRO",
+      "JOSE MANUEL OLIVARES"
+   ]
+}
