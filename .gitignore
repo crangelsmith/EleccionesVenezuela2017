@@ -13,3 +13,7 @@ gen
 .idea/modules.xml
 .idea/workspace.xml
 src/data_treatment.pyc
+jupyter/.ipynb_checkpoints/First results-checkpoint.ipynb
+jupyter/pandoc-1.17.0.3.tar.gz
+jupyter/pandoc-1.17.0.3/
+src/make_figures.pyc

@@ -45,6 +45,8 @@ def update_dataframe(df,PSUV,MUD):
     for i in unique_centros:
 
         centro = df[df['centro'] == i]
+        if centro.shape[0]==1:
+            print 1
         if centro['VOTOS ESCRUTADOS'].sum()!=0:
             average = centro[PSUV].sum() / float(centro['VOTOS ESCRUTADOS'].sum())
 
@@ -53,7 +55,10 @@ def update_dataframe(df,PSUV,MUD):
 
 
         centro_average[i] = average
-        centro_average_abstention[i] = centro['VOTOS ESCRUTADOS'].sum()/float(centro['ELECTORES INSCRITOS'].sum())
+        if (centro['ELECTORES INSCRITOS'].sum()!=0):
+            centro_average_abstention[i] = centro['VOTOS ESCRUTADOS'].sum()/float(centro['ELECTORES INSCRITOS'].sum())
+        else:
+            centro_average_abstention[i] = 1
 
     parroquia_average = {}
     parroquia_average_abstention = {}
@@ -65,7 +70,10 @@ def update_dataframe(df,PSUV,MUD):
             average = 0
 
         parroquia_average[i] = average
-        parroquia_average_abstention[i] = parroquia['VOTOS ESCRUTADOS'].sum()/float(parroquia['ELECTORES INSCRITOS'].sum())
+        if (parroquia['ELECTORES INSCRITOS'].sum()!=0):
+            parroquia_average_abstention[i] = parroquia['VOTOS ESCRUTADOS'].sum()/float(parroquia['ELECTORES INSCRITOS'].sum())
+        else:
+            parroquia_average_abstention[i] = 1
 
     municipio_average = {}
     municipio_average_abstention = {}
@@ -255,3 +263,16 @@ PSUV_MUD_dic={
       "JOSE MANUEL OLIVARES"
    ]
 }
+
+
+def main():
+    df = pd.read_csv(
+        "/home/crangel/PycharmProjects/EleccionesVenezuela2017/previous_electoral_results/resultados_elecc_2000.csv")
+    df["VOTOS VALIDOS"] = df["VOTOS ESCRUTADOS"] - df["VOTOS NULOS"]
+    df["ABSTENCION"] = df["ELECTORES INSCRITOS"] - df["VOTOS ESCRUTADOS"]
+
+    df_final = update_dataframe(df, "chavez", "arias")
+
+    print df_final
+
+main()
